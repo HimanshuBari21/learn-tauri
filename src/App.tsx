@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
@@ -7,9 +7,16 @@ function App() {
   const [greetMsg, setGreetMsg] = useState("");
   const [name, setName] = useState("");
 
+  const [sum, setSum] = useState(0);
+
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
     setGreetMsg(await invoke("greet", { name }));
+  }
+
+  async function getSum(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    setSum(await invoke("num_add", { num1: 5, num2: 7 }));
   }
 
   return (
@@ -42,10 +49,12 @@ function App() {
           onChange={(e) => setName(e.currentTarget.value)}
           placeholder="Enter a name..."
         />
-        <button type="submit">Greet</button>
+        <button onClick={getSum}>Show sum</button>
+        <button type="submit">G reet</button>
       </form>
 
       <p>{greetMsg}</p>
+      <p>{sum}</p>
     </div>
   );
 }
